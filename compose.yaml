@@ -1,0 +1,24 @@
+name: tinyproxy
+
+services:
+  tinyproxy:
+    image: ${TINYPROXY_IMAGE:-ghcr.io/jon-hedgerows/tinyproxy:latest}
+    restart: unless-stopped
+    # this replicates the healthcheck defined in the Dockerfile
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 5s
+      retries: 1
+      start_period: 30s
+      start_interval: 5s
+    environment:
+      TINYPROXY_ALLOWLIST: "${TINYPROXY_ALLOWLIST:-192.168.0.0/16,172.16.0.0/12,10.0.0.0/8,fd00::/8,169.254.0.0/15,fe80::/10}"
+      TINYPROXY_LISTEN: "${TINYPROXY_LISTEN:-0.0.0.0}"
+      TINYPROXY_PORT: "${TINYPROXY_PORT:-8888}"
+      TINYPROXY_HEALTHCHECKURL: "${TINYPROXY_HEALTHCHECKURL:-http://tinyproxy.stats}"
+      TINYPROXY_LOGLEVEL: "${TINYPROXY_LOGLEVEL:-connect}"
+    network_mode: "host"
+    # optionally map a volume containing tinyproxy.conf instead of environment vars
+    # volumes:
+    #   - ./conf:/conf
