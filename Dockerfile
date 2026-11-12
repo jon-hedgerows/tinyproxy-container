@@ -1,4 +1,4 @@
-FROM alpine:3.24.3 AS tinyproxy
+FROM alpine:3.24.4 AS tinyproxy
 
 RUN apk update && apk add tinyproxy && apk add curl && rm -rf /var/cache/apk/* && rm -f /var/log/apk.log
 
